@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const {useState} = React;
+
+        function App() {
+            const [todo, setTodo] = useState([
+                {id: 1, name: '끝내주게 숨쉬기'},
+                {id: 2, name: '간지나게 자기'},
+                {id: 3, name: '작살나게 밥먹기'}
+            ]);
+
+            const [selectAll, setSelectAll] = useState(false);
+            const [selectOne, setSelectOne] = useState([]);
+        
+            const handleSelectAll = () => {
+                setSelectAll(!selectAll);
+                const selectMany = selectAll ? [] : todo.map((todo) => todo.id);
+                setSelectOne(selectMany);
+            };
+
+            const handleSelectOne = (id) => {
+                const selectMany = [...selectOne];
+                if(selectMany.includes(id)){
+                    const index = selectMany.indexOf(id);
+                    selectMany.splice(index, 1);
+                } else {
+                    selectMany.push(id);
+                }
+                setSelectOne(selectMany);
+
+                if(selectMany.length === todo.length){
+                    setSelectAll(true);
+                } else {
+                    setSelectAll(false);
+                }
+            };
+            
+
+            const [inputName, setInputName]= useState('');
+            const [nextId, setNextId] = useState(4);
+
+            const onChangeHandler = (e) => setInputName(e.target.value);
+
+            const onClickHandler = () => {
+            const newTodo = [
+                ...todo,
+                {
+                    id: nextId,
+                    name: inputName
+                },
+            ];
+            setTodo(newTodo);
+            setNextId(nextId + 1);
+            setInputName('');
+            };
+
+            const todoList = todo.map(todo => 
+                                        <p key={todo.id}>
+                                            <input type="checkbox" name="check" value={todo.id} checked={selectOne.includes(todo.id)} onChange={() => handleSelectOne(todo.id)}/>
+                                                <span style={{textDecoration: selectOne.includes(todo.id)? 'line-through' : 'none', color: selectOne.includes(todo.id)? 'gray' : 'black'}}>
+                                                    {todo.name}</span></p>);
+
+            return(
+                <>
+                    <input
+                        value={inputName}
+                        onChange={onChangeHandler}
+                    />
+                    <button onClick={onClickHandler}>할 일 추가</button>
+                    
+                    <ul><p><input type="checkbox" name="allCheck" checked={selectAll} onChange={handleSelectAll}/>전체 선택</p>
+                        {todoList}</ul>
+                </>
+            );
+                    }
+        
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+</body>
+</html>
