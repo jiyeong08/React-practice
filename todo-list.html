@@ -7,6 +7,54 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header{
+            height: 88px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: darkseagreen;
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            cursor: default;
+        }
+
+        .todoList{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 27px;
+            background-color: darkorchid;
+            cursor: default;
+        }
+
+        .footer{
+            height: 88px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: darkred;
+            color: white;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .addbtn{
+            border-radius: 10px;
+            height: 21px;
+            width: 88px;
+            background-color: black;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
@@ -54,37 +102,60 @@
             const onChangeHandler = (e) => setInputName(e.target.value);
 
             const onClickHandler = () => {
-            const newTodo = [
-                ...todo,
-                {
-                    id: nextId,
-                    name: inputName
-                },
-            ];
-            setTodo(newTodo);
-            setNextId(nextId + 1);
-            setInputName('');
+                const newTodo = [
+                    ...todo,
+                    {
+                        id: nextId,
+                        name: inputName
+                    },
+                ];
+                setTodo(newTodo);
+                setNextId(nextId + 1);
+                setInputName('');
             };
 
+            const onRemove = id => {
+                const changeList = todo.filter(todo => todo.id != id);
+                setTodo(changeList);
+            }
+
+            const removeAll = () => {
+                const removeTodo = todo.filter(todo => todo.id == '');
+                setTodo(removeTodo);
+            }
+
             const todoList = todo.map(todo => 
-                                        <p key={todo.id}>
-                                            <input type="checkbox" name="check" value={todo.id} checked={selectOne.includes(todo.id)} onChange={() => handleSelectOne(todo.id)}/>
-                                                <span style={{textDecoration: selectOne.includes(todo.id)? 'line-through' : 'none', color: selectOne.includes(todo.id)? 'gray' : 'black'}}>
-                                                    {todo.name}</span></p>);
+                                    <p key={todo.id}>
+                                    <input type="checkbox" name="check" value={todo.id} checked={selectOne.includes(todo.id)} onChange={() => handleSelectOne(todo.id)}/>
+                                    <span style={{textDecoration: selectOne.includes(todo.id)? 'line-through' : 'none', color: selectOne.includes(todo.id)? 'lightgray' : 'white'}}>
+                                    &nbsp;{todo.name}&nbsp;</span>
+                                    <span onClick={() => onRemove(todo.id)}>🙅‍♀️&nbsp;</span>
+                                    </p>
+                                    );
 
             return(
                 <>
+                <header className="header">
+                    <input type="checkbox" name="allCheck" checked={selectAll} onChange={handleSelectAll}/>
+                    <h1>&nbsp;To Do List&nbsp;</h1>
+                    <h1 onClick={removeAll}>🙅‍♂️</h1>
+                </header>
+                <div className="todoList">                         
+                    <ul>
+                        {todoList}
+                    </ul>
+                </div>
+                <footer className="footer">
                     <input
                         value={inputName}
                         onChange={onChangeHandler}
                     />
-                    <button onClick={onClickHandler}>할 일 추가</button>
-                    
-                    <ul><p><input type="checkbox" name="allCheck" checked={selectAll} onChange={handleSelectAll}/>전체 선택</p>
-                        {todoList}</ul>
+                    <br/>
+                    <button className="addbtn" onClick={onClickHandler}>할 일 추가</button>
+                </footer>
                 </>
             );
-                    }
+        }
         
 
         ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
