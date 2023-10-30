@@ -62,7 +62,7 @@
 
         const {useState} = React;
 
-        function App() {
+        function Work(){
             const [todo, setTodo] = useState([
                 {id: 1, name: '끝내주게 숨쉬기'},
                 {id: 2, name: '간지나게 자기'},
@@ -95,15 +95,6 @@
                 }
             };
             
-            const todoList = todo.map(todo => 
-                                    <p key={todo.id}>
-                                    <input type="checkbox" name="check" value={todo.id} checked={selectOne.includes(todo.id)} onChange={() => handleSelectOne(todo.id)}/>
-                                    <span style={{textDecoration: selectOne.includes(todo.id)? 'line-through' : 'none', color: selectOne.includes(todo.id)? 'lightgray' : 'white'}}>
-                                    &nbsp;{todo.name}&nbsp;</span>
-                                    <span onClick={() => onRemove(todo.id)}>🙅‍♀️&nbsp;</span>
-                                    </p>
-                                    );
-            
             const onRemove = id => {
                 const changeList = todo.filter(todo => todo.id != id);
                 setTodo(changeList);
@@ -114,46 +105,57 @@
                 setTodo(removeTodo);
             }
 
-            const Header = () => {
-                return(
+            const onChangeHandler = (e) => setInputName(e.target.value);
+            const [inputName, setInputName]= useState('');
+            const [nextId, setNextId] = useState(4);
+            const onClickHandler = () => {
+                const newTodo = [
+                    ...todo,
+                    {
+                        id: nextId,
+                         name: inputName
+                    },
+                ];
+                setTodo(newTodo);
+                setNextId(nextId + 1);
+                setInputName('');
+            };
+
+            const todoList = todo.map(todo => 
+                                    <p key={todo.id}>
+                                    <input type="checkbox" name="check" value={todo.id} checked={selectOne.includes(todo.id)} onChange={() => handleSelectOne(todo.id)}/>
+                                    <span style={{textDecoration: selectOne.includes(todo.id)? 'line-through' : 'none', color: selectOne.includes(todo.id)? 'lightgray' : 'white'}}>
+                                    &nbsp;{todo.name}&nbsp;</span>
+                                    <span onClick={() => onRemove(todo.id)}>🙅‍♀️&nbsp;</span>
+                                    </p>
+                                    );
+        }
+        
+        function Header({selectAll, handleSelectAll, removeAll}){
+            return(
                     <header className="header">
                         <input type="checkbox" name="allCheck" checked={selectAll} onChange={handleSelectAll}/>
                         <h1>&nbsp;To Do List&nbsp;</h1>
                         <h1 onClick={removeAll}>🙅‍♂️</h1>
                     </header>
                 );
-            }
+        }
 
-            const List = () => {               
-                return(
+        function List({todoList, handleSelectOne, onRemove}){
+            return(
                     <div className="todoList">                         
                         <ul>
                             {todoList}
                         </ul>
                     </div>              
                 );
-            }
+        }
 
-            const Footer = () => {
-                const onChangeHandler = (e) => setInputName(e.target.value);
-                const [inputName, setInputName]= useState('');
-                const [nextId, setNextId] = useState(4);
-                const onClickHandler = () => {
-                    const newTodo = [
-                        ...todo,
-                        {
-                            id: nextId,
-                            name: inputName
-                        },
-                    ];
-                    setTodo(newTodo);
-                    setNextId(nextId + 1);
-                    setInputName('');
-                };
-
-                return(
+        function Footer({inputName, onChangeHandler, onClickHandler}){
+            return(
                     <footer className="footer">
                         <input
+                            name="add"
                             value={inputName}
                             onChange={onChangeHandler}
                         />
@@ -161,8 +163,9 @@
                         <button className="addbtn" onClick={onClickHandler}>할 일 추가</button>
                     </footer>
                 );
-            }
+        }
 
+        function App() {
             return(
                 <>
                     <Header/>
