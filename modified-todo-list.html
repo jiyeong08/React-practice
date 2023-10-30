@@ -61,8 +61,42 @@
     <script type="text/babel">
 
         const {useState} = React;
+        
+        function Header({selectAll, handleSelectAll, removeAll}){
+            return(
+                    <header className="header">
+                        <input type="checkbox" name="allCheck" checked={selectAll} onChange={handleSelectAll}/>
+                        <h1>&nbsp;To Do List&nbsp;</h1>
+                        <h1 onClick={removeAll}>🙅‍♂️</h1>
+                    </header>
+                );
+        }
 
-        function Work(){
+        function List({todoList, handleSelectOne, onRemove}){
+            return(
+                    <div className="todoList">                         
+                        <ul>
+                            {todoList}
+                        </ul>
+                    </div>              
+                );
+        }
+
+        function Footer({inputName, onChangeHandler, onClickHandler}){
+            return(
+                    <footer className="footer">
+                        <input
+                            name="add"
+                            value={inputName}
+                            onChange={onChangeHandler}
+                        />
+                        <br/>
+                        <button className="addbtn" onClick={onClickHandler}>할 일 추가</button>
+                    </footer>
+                );
+        }
+
+        function App() {
             const [todo, setTodo] = useState([
                 {id: 1, name: '끝내주게 숨쉬기'},
                 {id: 2, name: '간지나게 자기'},
@@ -129,48 +163,12 @@
                                     <span onClick={() => onRemove(todo.id)}>🙅‍♀️&nbsp;</span>
                                     </p>
                                     );
-        }
-        
-        function Header({selectAll, handleSelectAll, removeAll}){
-            return(
-                    <header className="header">
-                        <input type="checkbox" name="allCheck" checked={selectAll} onChange={handleSelectAll}/>
-                        <h1>&nbsp;To Do List&nbsp;</h1>
-                        <h1 onClick={removeAll}>🙅‍♂️</h1>
-                    </header>
-                );
-        }
 
-        function List({todoList, handleSelectOne, onRemove}){
-            return(
-                    <div className="todoList">                         
-                        <ul>
-                            {todoList}
-                        </ul>
-                    </div>              
-                );
-        }
-
-        function Footer({inputName, onChangeHandler, onClickHandler}){
-            return(
-                    <footer className="footer">
-                        <input
-                            name="add"
-                            value={inputName}
-                            onChange={onChangeHandler}
-                        />
-                        <br/>
-                        <button className="addbtn" onClick={onClickHandler}>할 일 추가</button>
-                    </footer>
-                );
-        }
-
-        function App() {
             return(
                 <>
-                    <Header/>
-                    <List/>
-                    <Footer/>
+                    <Header selectAll={selectAll} handleSelectAll={handleSelectAll} removeAll={removeAll} />
+                    <List todoList={todoList} handleSelectOne={handleSelectOne} onRemove={onRemove} />
+                    <Footer inputName={inputName} onChangeHandler={onChangeHandler} onClickHandler={onClickHandler} />
                 </>
             );
         }
